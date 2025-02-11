@@ -1,36 +1,24 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<Car> carsList = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
+        Race race = new Race();
 
         System.out.println("Добро пожаловать на '24 часа Ле-Мана'!");
         System.out.println("Нужно будет ввести три автомобиля - название, скорость");
 
-        // Ввод первого автомобиля
-        String firstCarName = getCorrectCarName(scanner);
-        int firstCarSpeed = getCorrectCarSpeed(scanner);
-        createCar(firstCarName, firstCarSpeed, carsList);
+        // Ввод автоммобилей
+        for (int i = 1; i <= 3; i++) {
+            System.out.println("Введите название " + i + "-го автомобиля:");
+            String carName = getCorrectCarName(scanner);
 
-        // Ввод второго автомобиля
-        String secondCarName = getCorrectCarName(scanner);
-        int secondCarSpeed = getCorrectCarSpeed(scanner);
-        createCar(secondCarName, secondCarSpeed, carsList);
+            System.out.println("Введите скорость " + i + "-го автомобиля (больше 0 и меньше 250):");
+            int carSpeed = getCorrectCarSpeed(scanner);
 
-        // Ввод третьего автомобиля
-        String thirdCarName = getCorrectCarName(scanner);
-        int thirdCarSpeed = getCorrectCarSpeed(scanner);
-        createCar(thirdCarName, thirdCarSpeed, carsList);
+            race.whoIsLeader(carName, carSpeed);
 
-        // Печать списка автомобилей
-        getCars(carsList);
-
-        // Гонка
-        Race race = new Race();
-        for (Car car : carsList) {
-            race.whoIsLeader(car.carName, car.carSpeed);
+            createCar(carName, carSpeed);
         }
 
         // Вывод победителя
@@ -44,8 +32,6 @@ public class Main {
         String name;
 
         while (true) {
-            System.out.println("Введите название автомобиля:");
-
             name = scanner.nextLine();
 
             if (name.trim().isEmpty()) {
@@ -63,10 +49,10 @@ public class Main {
     // Получение корректной скорости
     public static int getCorrectCarSpeed(Scanner scanner) {
         int speed;
+        final int MAX_SPEED = 250;
+        final int MIN_SPEED = 0;
 
         while (true) {
-            System.out.println("Введите скорость автомобиля (больше 0 и меньше 250):");
-
             String input = scanner.nextLine();
 
             if (input.trim().isEmpty()) {
@@ -77,7 +63,7 @@ public class Main {
             try {
                 speed = Integer.parseInt(input);
 
-                if (speed > 0 && speed < 250) {
+                if (speed > MIN_SPEED && speed < MAX_SPEED) {
                     break;
                 } else {
                     System.out.println("Ошибка: скорость должна быть больше 0 и меньше 250. Попробуйте снова.");
@@ -90,51 +76,10 @@ public class Main {
         return speed;
     }
 
-    // Получение списка автомобилей
-    public static void getCars(ArrayList<Car> carsList) {
-        System.out.println("Вывожу список автомобилей на трассе:");
-        for (Car car : carsList) {
-            System.out.println("Автомобиль '" + car.carName + "', скорость '" + car.carSpeed + "'");
-        }
-        System.out.println("---------------------------");
-    }
-
     // Создание автомобилей
-    public static void createCar(String carName, int carSpeed, ArrayList<Car> carsList) {
-        Car car = new Car(carName, carSpeed);
-        carsList.add(car);
+    public static void createCar(String carName, int carSpeed) {
+        new Car(carName, carSpeed);
         System.out.println("Автомобиль '" + carName + "' со скорость '" + carSpeed + "' создан и добавлен на трассу");
         System.out.println("---------------------------");
-    }
-
-    // Класс «Автомобиль»
-    public static class Car {
-        String carName;
-        int carSpeed;
-
-        public Car(String carName, int carSpeed) {
-            this.carName = carName;
-            this.carSpeed = carSpeed;
-        }
-    }
-
-    // Класс «Гонка»
-    public static class Race {
-        String leader = "";
-        int maxDistance = 0;
-
-        // Определение лидера
-        public void whoIsLeader(String carName, int carSpeed) {
-            int distance = carSpeed * 24;
-            if (distance > this.maxDistance) {
-                leader = carName;
-                maxDistance = distance;
-            }
-        }
-
-        // Получение лидера
-        public String getLeader() {
-            return leader;
-        }
     }
 }
